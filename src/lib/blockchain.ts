@@ -27,6 +27,10 @@ export default class BlockChain {
     return new Validation();
   }
 
+  getBlock(hash: string): Block | undefined {
+    return this.blocks.find((block) => block.hash === hash);
+  }
+
   isValid(): Validation {
     for (let i = this.blocks.length - 1; i > 0; i--) {
       const currentBlock = this.blocks[i];
