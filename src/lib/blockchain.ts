@@ -1,39 +1,49 @@
 import Block from './block'
+import Validation from "./validation";
 
-export default class BlockChain { 
-  blocks: Block[]
-  nextIndex: number = 0
+export default class BlockChain {
+  blocks: Block[];
+  nextIndex: number = 0;
 
   constructor() {
-    this.blocks = [new Block(this.nextIndex, "", "Genesis Block")]
-    this.nextIndex++
+    this.blocks = [new Block(this.nextIndex, "", "Genesis Block")];
+    this.nextIndex++;
   }
 
   getLastBlock(): Block {
-    return this.blocks[this.blocks.length - 1]
+    return this.blocks[this.blocks.length - 1];
   }
 
-  addBlock(block: Block): boolean {
-    const lastBlock = this.getLastBlock()
+  addBlock(block: Block): Validation {
+    const lastBlock = this.getLastBlock();
 
-    if(!block.isValid(lastBlock.hash, lastBlock.index)) return false
-  
-    this.blocks.push(block)
-    this.nextIndex++
+    const validation = block.isValid(lastBlock.hash, lastBlock.index);
+    if (!validation.success)
+      return new Validation(false, `Invalid block: ${validation.message}`);
 
-    return true
+    this.blocks.push(block);
+    this.nextIndex++;
+
+    return new Validation();
   }
 
-  isValid(): boolean {
-    for(let i = this.blocks.length -1; i > 0; i--) {
-      const currentBlock = this.blocks[i]
-      const previousBlock = this.blocks[i - 1]
+  isValid(): Validation {
+    for (let i = this.blocks.length - 1; i > 0; i--) {
+      const currentBlock = this.blocks[i];
+      const previousBlock = this.blocks[i - 1];
 
-      const isValid = currentBlock.isValid(previousBlock.hash, previousBlock.index)
+      const validation = currentBlock.isValid(
+        previousBlock.hash,
+        previousBlock.index
+      );
 
-      if(!isValid) return false
+      if (!validation.success)
+        return new Validation(
+          false,
+          `Invalid block #${currentBlock.index}: ${validation.message}`
+        );
     }
 
-    return true
+    return new Validation();
   }
 }
