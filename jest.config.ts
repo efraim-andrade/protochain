@@ -20,7 +20,10 @@ export default {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: ['<rootDir>/src/lib/**/*.ts'],
+  collectCoverageFrom: [
+    "<rootDir>/src/lib/**/*.ts",
+    "<rootDir>/src/server/**/*.ts",
+  ],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
@@ -34,10 +37,7 @@ export default {
   coverageProvider: "v8",
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: [
-    "text",
-    "lcov",
-  ],
+  coverageReporters: ["text", "lcov"],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
@@ -151,9 +151,7 @@ export default {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: [
-    "**/__tests__/**/*.ts",
-  ],
+  testMatch: ["**/__tests__/**/*.ts"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -189,5 +187,4 @@ export default {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-  
 };
