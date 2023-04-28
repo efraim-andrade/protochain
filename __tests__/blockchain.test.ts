@@ -1,12 +1,14 @@
 import Block from '../src/lib/block'
 import Blockchain from '../src/lib/blockchain'
 
+jest.mock("../src/lib/block");
+
 describe("Blockchain tests", () => {
   it("Should has genesis block", () => {
-    const blockchain = new Blockchain()
+    const blockchain = new Blockchain();
 
-    expect(blockchain.blocks.length).toBe(1)
-  })
+    expect(blockchain.blocks.length).toBe(1);
+  });
 
   it("Should be valid (genesis)", () => {
     const blockchain = new Blockchain();
@@ -38,7 +40,8 @@ describe("Blockchain tests", () => {
         data: "Block 2",
       } as Block)
     );
-    blockchain.blocks[1].data = "A transfer 2 to B";
+
+    blockchain.blocks[1].index = -1;
 
     expect(blockchain.isValid().success).toEqual(false);
   });
@@ -78,4 +81,4 @@ describe("Blockchain tests", () => {
 
     expect(result.success).toBe(false);
   });
-})
+});
