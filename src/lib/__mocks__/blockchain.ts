@@ -1,5 +1,6 @@
 import Block from "./block";
 import Validation from "../validation";
+import BlockInfo from "../blockInfo";
 
 export default class BlockChain {
   blocks: Block[];
@@ -37,5 +38,20 @@ export default class BlockChain {
 
   isValid(): Validation {
     return new Validation();
+  }
+
+  getFeePerTx(): number {
+    return 1;
+  }
+
+  getNextBlock(): BlockInfo {
+    return {
+      data: new Date().toString(),
+      index: 1,
+      feePerTx: this.getFeePerTx(),
+      difficulty: 0,
+      previousHash: this.getLastBlock().hash,
+      maxDifficulty: 62,
+    };
   }
 }
