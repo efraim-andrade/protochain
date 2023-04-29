@@ -81,4 +81,12 @@ describe("Blockchain tests", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it("should get next block info", () => {
+    const blockchain = new Blockchain();
+
+    const info = blockchain.getNextBlock();
+
+    expect(info.index).toBe(1);
+  });
 });

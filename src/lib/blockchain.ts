@@ -1,4 +1,5 @@
 import Block from './block'
+import BlockInfo from "./blockInfo";
 import Validation from "./validation";
 
 /**
@@ -9,6 +10,7 @@ import Validation from "./validation";
  */
 export default class BlockChain {
   static readonly DIFFICULTY_FACTOR = 5;
+  static readonly MAX_DIFFICULTY = 62;
 
   blocks: Block[];
   nextIndex: number = 0;
@@ -97,5 +99,35 @@ export default class BlockChain {
     }
 
     return new Validation();
+  }
+
+  /**
+   *  Gets the fee per transaction.
+   * @returns the fee per transaction.
+   */
+  getFeePerTx(): number {
+    return 1;
+  }
+
+  /**
+   *  Gets the next block to be mined.
+   * @returns a new block with the next index, a timestamp, and the hash of the last block.
+   */
+  getNextBlock(): BlockInfo {
+    const index = this.blocks.length;
+    const data = new Date().toString();
+    const feePerTx = this.getFeePerTx();
+    const difficulty = this.getDifficulty();
+    const previousHash = this.getLastBlock().hash;
+    const maxDifficulty = BlockChain.MAX_DIFFICULTY;
+
+    return {
+      data,
+      index,
+      feePerTx,
+      difficulty,
+      previousHash,
+      maxDifficulty,
+    };
   }
 }
