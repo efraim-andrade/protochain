@@ -1,13 +1,18 @@
-import axios, { AxiosError } from "axios";
+import dotenv from "dotenv";
+dotenv.config();
+
+import axios from "axios";
 import BlockInfo from "../lib/blockInfo";
 import Block from "../lib/block";
 
-const BLOCKCHAIN_SERVER = "http://localhost:4000";
+const BLOCKCHAIN_SERVER = process.env.BLOCKCHAIN_SERVER || "";
 
 const minerWallet = {
   privateKey: "123456",
-  publicKey: "wallet-address",
+  publicKey: process.env.MINER_WALLET || "",
 };
+
+console.log(`Logged as miner: ${minerWallet.publicKey}`);
 
 let totalMined = 0;
 
@@ -23,7 +28,7 @@ async function mine() {
   console.log(`Start mining block #${newBlock.index}...`);
   newBlock.mine(blockInfo.difficulty, minerWallet.publicKey);
 
-  console.log("Block mined! Sending to blockchain...");
+  console.log("Block mined! 🚀 Sending to blockchain...");
 
   try {
     await axios.post(`${BLOCKCHAIN_SERVER}/blocks`, newBlock);
