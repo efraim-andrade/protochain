@@ -1,5 +1,7 @@
 import Block from './block'
 import BlockInfo from "./blockInfo";
+import Transaction from "./transaction";
+import TransactionType from "./transactionTypes";
 import Validation from "./validation";
 
 /**
@@ -23,7 +25,12 @@ export default class BlockChain {
       new Block({
         index: this.nextIndex,
         previousHash: "",
-        data: "Genesis Block",
+        transactions: [
+          new Transaction({
+            type: TransactionType.FEE,
+            data: new Date().toString(),
+          } as Transaction),
+        ] as Transaction[],
       } as Block),
     ];
     this.nextIndex++;
@@ -115,17 +122,19 @@ export default class BlockChain {
    */
   getNextBlock(): BlockInfo {
     const index = this.blocks.length;
-    const data = new Date().toString();
+    const transactions = [
+      new Transaction({ data: new Date().toString() } as Transaction),
+    ];
     const feePerTx = this.getFeePerTx();
     const difficulty = this.getDifficulty();
     const previousHash = this.getLastBlock().hash;
     const maxDifficulty = BlockChain.MAX_DIFFICULTY;
 
     return {
-      data,
       index,
       feePerTx,
       difficulty,
+      transactions,
       previousHash,
       maxDifficulty,
     };

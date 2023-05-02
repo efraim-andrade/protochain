@@ -1,6 +1,8 @@
 import sha256 from 'crypto-js/sha256'
 import Validation from "./validation";
 import BlockInfo from "./blockInfo";
+import Transaction from "./transaction";
+import TransactionType from "./transactionTypes";
 
 /**
  * Creates a new Block
@@ -10,7 +12,7 @@ export default class Block {
   timestamp: number = Date.now();
   hash: string;
   previousHash: string;
-  data: string;
+  transactions: Transaction[];
   nonce: number;
   miner: string;
 
@@ -24,7 +26,10 @@ export default class Block {
    *
    */
   constructor(block?: Block) {
-    this.data = block?.data || "";
+    this.transactions = block?.transactions
+      ? block?.transactions.map((tx) => new Transaction(tx))
+      : ([] as Transaction[]);
+
     this.index = block?.index || 0;
     this.nonce = block?.nonce || 0;
     this.miner = block?.miner || "";
@@ -39,9 +44,14 @@ export default class Block {
    * @returns crypto-js hash of the block
    */
   getHash(): string {
+    const txs =
+      this.transactions && this.transactions.length
+        ? this.transactions.map((tx) => tx.hash).join("")
+        : "";
+
     return sha256(
       this.index +
-        this.data +
+        txs +
         this.timestamp +
         this.previousHash +
         this.nonce +
@@ -76,11 +86,31 @@ export default class Block {
     previousIndex: number,
     difficulty: number
   ): Validation {
-    if (previousIndex !== this.index - 1) {
+    if (this.transactions && this.transactions.length) {
+      if (
+        this.transactions.filter((tx) => tx.type === TransactionType.FEE)
+          .length > 1
+      ) {
+        return new Validation(false, "Too many fees.");
+      }
+
+      const validations = this.transactions.map((tx) => tx.isValid());
+
+      const errors = validations
+        .filter((validation) => !validation.success)
+        .map((validation) => validation.message);
+
+      if (errors.length > 0) {
+        return new Validation(
+          false,
+          `Invalid block due to invalid transactions: ${errors.join(", ")}`
+        );
+      }
+
       return new Validation(false, "Invalid index");
     }
 
-    if (!this.data) {
+    if (previousIndex !== this.index - 1) {
       return new Validation(false, "Invalid index");
     }
 
@@ -107,8 +137,8 @@ export default class Block {
   static fromBlockInfo(blockInfo: BlockInfo): Block {
     const block = new Block();
 
-    block.data = blockInfo.data;
     block.index = blockInfo.index;
+    block.transactions = blockInfo.transactions;
     block.previousHash = blockInfo.previousHash;
 
     return block;

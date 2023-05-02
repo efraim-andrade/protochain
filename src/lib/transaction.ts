@@ -11,6 +11,10 @@ export default class Transaction {
   timestamp: number;
   type: TransactionType;
 
+  /**
+   *  Creates a new transaction
+   * @param tx transaction data
+   */
   constructor(tx?: Transaction) {
     this.type = tx?.type || TransactionType.REGULAR;
     this.timestamp = tx?.timestamp || Date.now();
