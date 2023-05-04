@@ -1,7 +1,9 @@
 import Block from '../src/lib/block'
 import Blockchain from '../src/lib/blockchain'
+import Transaction from "../src/lib/transaction";
 
 jest.mock("../src/lib/block");
+jest.mock("../src/lib/transaction");
 
 describe("Blockchain tests", () => {
   it("Should has genesis block", () => {
@@ -23,7 +25,11 @@ describe("Blockchain tests", () => {
       new Block({
         index: 1,
         previousHash: blockchain.blocks[0].hash,
-        data: "Block 2",
+        transactions: [
+          new Transaction({
+            data: "block 2",
+          } as Transaction),
+        ],
       } as Block)
     );
 
@@ -37,7 +43,11 @@ describe("Blockchain tests", () => {
       new Block({
         index: 1,
         previousHash: blockchain.blocks[0].hash,
-        data: "Block 2",
+        transactions: [
+          new Transaction({
+            data: "block 2",
+          } as Transaction),
+        ],
       } as Block)
     );
 
@@ -53,7 +63,11 @@ describe("Blockchain tests", () => {
       new Block({
         index: 1,
         previousHash: blockchain.blocks[0].hash,
-        data: "Block 2",
+        transactions: [
+          new Transaction({
+            data: "block 2",
+          } as Transaction),
+        ],
       } as Block)
     );
 
@@ -75,7 +89,11 @@ describe("Blockchain tests", () => {
       new Block({
         index: -1,
         previousHash: blockchain.blocks[0].hash,
-        data: "Block 2",
+        transactions: [
+          new Transaction({
+            data: "block 2",
+          } as Transaction),
+        ],
       } as Block)
     );
 

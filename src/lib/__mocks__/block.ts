@@ -1,3 +1,4 @@
+import Transaction from "../transaction";
 import Validation from "../validation";
 
 export default class Block {
@@ -5,11 +6,11 @@ export default class Block {
   timestamp: number = Date.now();
   hash: string;
   previousHash: string;
-  data: string;
+  transaction: Transaction[];
 
   constructor(block?: Block) {
-    this.data = block?.data || "";
     this.index = block?.index || 0;
+    this.transaction = block?.transaction || [];
     this.previousHash = block?.previousHash || "";
 
     this.hash = block?.hash || this.getHash();

@@ -27,7 +27,7 @@ export default class Block {
    */
   constructor(block?: Block) {
     this.transactions = block?.transactions
-      ? block?.transactions.map((tx) => new Transaction(tx))
+      ? block.transactions.map((tx) => new Transaction(tx))
       : ([] as Transaction[]);
 
     this.index = block?.index || 0;
@@ -106,8 +106,6 @@ export default class Block {
           `Invalid block due to invalid transactions: ${errors.join(", ")}`
         );
       }
-
-      return new Validation(false, "Invalid index");
     }
 
     if (previousIndex !== this.index - 1) {

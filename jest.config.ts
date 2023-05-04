@@ -6,7 +6,11 @@ export default {
     "<rootDir>/src/server/**/*.ts",
   ],
   coverageDirectory: "coverage",
-  coveragePathIgnorePatterns: ["/node_modules/", "/src/lib/blockInfo.ts"],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/src/lib/blockInfo.ts",
+    "/src/lib/transactionTypes.ts",
+  ],
   coverageProvider: "v8",
   coverageReporters: ["text", "lcov"],
   preset: "ts-jest",
