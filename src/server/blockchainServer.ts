@@ -7,7 +7,7 @@ import morgan from "morgan";
 import BlockChain from "../lib/blockchain";
 import Block from "../lib/block";
 
-const PORT: number = parseInt(process.env.PORT || "3000");
+const PORT: number = parseInt(process.env.PORT || "4000");
 
 const app = express();
 
@@ -33,7 +33,7 @@ app.get("/blocks/next", (req, res, next) => {
   res.json(blockchain.getNextBlock());
 });
 
-app.get("/blocks/:indexOrHash", (req, res, next) => {
+app.get("/blocks/:indexOrHash", (req, res) => {
   let block;
 
   if (/^[0-9]+$/.test(req.params.indexOrHash)) {
