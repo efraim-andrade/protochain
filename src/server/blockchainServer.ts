@@ -6,6 +6,7 @@ import morgan from "morgan";
 
 import BlockChain from "../lib/blockchain";
 import Block from "../lib/block";
+import Transaction from "../lib/transaction";
 
 const PORT: number = parseInt(process.env.PORT || "4000");
 
@@ -21,7 +22,7 @@ app.use(express.json());
 
 const blockchain = new BlockChain();
 
-app.get("/status", (req, res, next) => {
+app.get("/status", (_, res) => {
   res.json({
     isValid: blockchain.isValid(),
     lastBlock: blockchain.getLastBlock(),
@@ -29,7 +30,7 @@ app.get("/status", (req, res, next) => {
   });
 });
 
-app.get("/blocks/next", (req, res, next) => {
+app.get("/blocks/next", (_, res) => {
   res.json(blockchain.getNextBlock());
 });
 
@@ -53,7 +54,7 @@ app.get("/blocks/:indexOrHash", (req, res) => {
   return res.json(block);
 });
 
-app.post("/blocks", (req, res, next) => {
+app.post("/blocks", (req, res) => {
   if (req.body.hash === undefined) return res.sendStatus(422);
 
   const block = new Block(req.body as Block);
@@ -65,6 +66,30 @@ app.post("/blocks", (req, res, next) => {
   }
 
   return res.status(201).json(block);
+});
+
+app.get("/transactions/:hash?", (req, res) => {
+  if (req.params.hash) {
+    return res.json(blockchain.getTransaction(req.params.hash));
+  }
+
+  return res.json({
+    next: blockchain.mempool.slice(0, BlockChain.TX_PER_BLOCK),
+    total: blockchain.mempool.length,
+  });
+});
+
+app.post("/transactions", (req, res) => {
+  if (req.body.hash === undefined) return res.sendStatus(422);
+
+  const tx = new Transaction(req.body as Transaction);
+  const validation = blockchain.addTransaction(tx);
+
+  if (!validation.success) {
+    return res.status(400).json(validation);
+  }
+
+  return res.status(201).json(tx);
 });
 
 /* c8 ignore start */

@@ -1,6 +1,7 @@
 import Block from './block'
 import BlockInfo from "./blockInfo";
 import Transaction from "./transaction";
+import TransactionSearch from "./transactionSearch";
 import TransactionType from "./transactionTypes";
 import Validation from "./validation";
 
@@ -55,6 +56,11 @@ export default class BlockChain {
     return Math.ceil(this.blocks.length / BlockChain.DIFFICULTY_FACTOR);
   }
 
+  /**
+   * adds a transaction to the mempool.
+   * @param transaction The transaction to add to the mempool.
+   * @returns Validation object.
+   */
   addTransaction(transaction: Transaction): Validation {
     const validation = transaction.isValid();
     if (!validation.success) {
@@ -129,6 +135,33 @@ export default class BlockChain {
     return this.blocks.find((block) => block.hash === hash);
   }
 
+  getTransaction(hash: string): TransactionSearch {
+    const mempoolIndex = this.mempool.findIndex((tx) => tx.hash === hash);
+    if (mempoolIndex !== -1) {
+      return {
+        mempoolIndex,
+        transaction: this.mempool[mempoolIndex],
+      } as TransactionSearch;
+    }
+
+    const blockIndex = this.blocks.findIndex((block) =>
+      block.transactions.some((tx) => tx.hash === hash)
+    );
+    if (blockIndex !== -1) {
+      return {
+        blockIndex,
+        transaction: this.blocks[blockIndex].transactions.find(
+          (tx) => tx.hash === hash
+        ),
+      } as TransactionSearch;
+    }
+
+    return {
+      blockIndex: -1,
+      mempoolIndex: -1,
+    } as TransactionSearch;
+  }
+
   /**
    * Validate mined block to before adds to blockchain.
    * @returns validation object.
@@ -167,7 +200,7 @@ export default class BlockChain {
    * @returns a new block with the next index, a timestamp, and the hash of the last block.
    */
   getNextBlock(): BlockInfo | null {
-    if (!this.mempool || this.mempool.length) {
+    if (!this.mempool || !this.mempool.length) {
       return null;
     }
 
