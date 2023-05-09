@@ -14,7 +14,7 @@ export default class BlockChain {
         index: 0,
         hash: "abc",
         previousHash: "",
-        transaction: [
+        transactions: [
           new Transaction({
             data: "tx1",
             type: TransactionType.FEE,

@@ -10,6 +10,7 @@ export default {
     "/node_modules/",
     "/src/lib/blockInfo.ts",
     "/src/lib/transactionTypes.ts",
+    "/src/lib/transactionSearch.ts",
   ],
   coverageProvider: "v8",
   coverageReporters: ["text", "lcov"],

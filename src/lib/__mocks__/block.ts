@@ -6,11 +6,11 @@ export default class Block {
   timestamp: number = Date.now();
   hash: string;
   previousHash: string;
-  transaction: Transaction[];
+  transactions: Transaction[];
 
   constructor(block?: Block) {
     this.index = block?.index || 0;
-    this.transaction = block?.transaction || [];
+    this.transactions = block?.transactions || [];
     this.previousHash = block?.previousHash || "";
 
     this.hash = block?.hash || this.getHash();
